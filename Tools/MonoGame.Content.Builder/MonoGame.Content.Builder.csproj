@@ -8,11 +8,16 @@
     <BaseOutputPath>..\..\Artifacts\MonoGame.Content.Builder</BaseOutputPath>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>mgcb</ToolCommandName>
-    <PackageId>dotnet-mgcb</PackageId>
+    <PackageId>mgcb-fabulousfabi</PackageId>
     <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <AssemblyName>mgcb</AssemblyName>
     <UseAppHost>true</UseAppHost>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Mono Game Content Manager - Spritefonts bold and italic</Title>
+    <Authors>MonoGame Team, Fabian Walter</Authors>
+    <RepositoryUrl>https://github.com/fabulousfabi71/MonoGame.git</RepositoryUrl>
+    <PackageTags>MonoGame ContentBuilder Spritefont Bold Italic</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

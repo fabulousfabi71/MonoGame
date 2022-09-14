@@ -27,9 +27,5 @@ steps:
     filename: 'C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe'
     arguments: '$(Build.Repository.LocalPath)\MonoGame.Tools.Windows.ContentBuilder.sln /Build "Release|x64" /Out $(Agent.BuildDirectory)\BuildLogx64-$(Build.BuildNumber).log'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+
 

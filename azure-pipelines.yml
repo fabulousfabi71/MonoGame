@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/MonoGame.Tools.Windows.sln'
+  solution: '**/MonoGame.Tools.Windows.ContentBuilder.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 

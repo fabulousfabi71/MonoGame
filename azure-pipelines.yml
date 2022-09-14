@@ -22,10 +22,13 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: BatchScript@1
+  displayName: 'Build solution MonoGame.Framework.WindowsDX.sln x64'
+  inputs:
+   filename: 'C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe'
+   arguments: '$(Build.Repository.LocalPath)\MonoGame.Framework.WindowsDX.sln /Build "Release|x64" /Out $(Agent.BuildDirectory)\BuildLogFWx64-$(Build.BuildNumber).log'
+  
+- task: BatchScript@1
   displayName: 'Build solution MonoGame.Tools.Windows.ContentBuilder.sln x64'
   inputs:
     filename: 'C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe'
-    arguments: '$(Build.Repository.LocalPath)\MonoGame.Tools.Windows.ContentBuilder.sln /Build "Release|x64" /Out $(Agent.BuildDirectory)\BuildLogx64-$(Build.BuildNumber).log'
-
-
-
+    arguments: '$(Build.Repository.LocalPath)\MonoGame.Tools.Windows.ContentBuilder.sln /Build "Release|x64" /Out $(Agent.BuildDirectory)\BuildLogMGCBx64-$(Build.BuildNumber).log'

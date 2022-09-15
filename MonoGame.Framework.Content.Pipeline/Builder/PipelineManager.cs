@@ -57,6 +57,7 @@ namespace MonoGame.Framework.Content.Pipeline.Builder
         public string ProjectDirectory { get; private set; }
         public string OutputDirectory { get; private set; }
         public string IntermediateDirectory { get; private set; }
+        public string FontDir { get; private set; }
 
         public ContentStatsCollection ContentStats { get; private set; }
 
@@ -92,7 +93,10 @@ namespace MonoGame.Framework.Content.Pipeline.Builder
         /// </summary>
         public bool RethrowExceptions { get; set; }
 
-        public PipelineManager(string projectDir, string outputDir, string intermediateDir)
+        public PipelineManager(string projectDir,
+            string outputDir,
+            string intermediateDir,
+            string fontDir)
         {
             _pipelineBuildEvents = new Dictionary<string, List<PipelineBuildEvent>>();
             _processorDefaultValues = new Dictionary<string, OpaqueDataDictionary>();
@@ -105,8 +109,10 @@ namespace MonoGame.Framework.Content.Pipeline.Builder
             ProjectDirectory = PathHelper.NormalizeDirectory(projectDir);
             OutputDirectory = PathHelper.NormalizeDirectory(outputDir);
             IntermediateDirectory = PathHelper.NormalizeDirectory(intermediateDir);
+            FontDir = PathHelper.NormalizeDirectory(fontDir);
 
-	        RegisterCustomConverters();
+
+            RegisterCustomConverters();
 
             // Load the previous content stats.            
             ContentStats = new ContentStatsCollection();
@@ -531,7 +537,11 @@ namespace MonoGame.Framework.Content.Pipeline.Builder
             TrackPipelineBuildEvent(contentEvent);
         }
 
-        public PipelineBuildEvent BuildContent(string sourceFilepath, string outputFilepath = null, string importerName = null, string processorName = null, OpaqueDataDictionary processorParameters = null)
+        public PipelineBuildEvent BuildContent(string sourceFilepath,
+            string outputFilepath = null,
+            string importerName = null,
+            string processorName = null,
+            OpaqueDataDictionary processorParameters = null)
         {
             sourceFilepath = PathHelper.Normalize(sourceFilepath);
             ResolveOutputFilepath(sourceFilepath, ref outputFilepath);

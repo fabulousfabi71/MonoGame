@@ -57,6 +57,11 @@ namespace Microsoft.Xna.Framework.Content.Pipeline
         public abstract GraphicsProfile TargetProfile { get; }
 
         /// <summary>
+        /// Gets the additional font directory of the content processor.
+        /// </summary>
+        public abstract string FontDir { get; }
+
+        /// <summary>
         /// Initializes a new instance of ContentProcessorContext.
         /// </summary>
         public ContentProcessorContext()

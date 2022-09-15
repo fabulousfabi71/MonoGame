@@ -24,11 +24,14 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         Library lib = null;
 
-        public void Import(FontDescription options, string fontName)
+        public int Import(FontDescription options, string fontName)
         {
             lib = new Library();
+
             // Create a bunch of GDI+ objects.
             var face = CreateFontFace(options, fontName);
+            var faceHeight = face.Size.Metrics.NominalHeight;
+
             try
             {
                 // Which characters do we want to include?
@@ -47,6 +50,28 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                         glyphMaps.Add(glyphIndex, glyphData);
                     }
 
+                    // FW (15.09.2022): Test
+                    /***
+                    var bmpContent = glyphData.Bitmap as PixelBitmapContent<byte>;
+                    if (bmpContent != null)
+                    {
+                        for (int x = 0; x < bmpContent.Width; x++)
+                        {
+                            try
+                            {
+                                if (bmpContent.Height > 10)
+                                {
+                                    bmpContent.SetPixel(x, 10, 255);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
+                    }
+                    ***/
+                    
                     var glyph = new Glyph(character, glyphData);
                     glyphList.Add(glyph);
                 }
@@ -68,6 +93,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                     lib = null;
                 }
             }
+
+            return faceHeight;
         }
 
 

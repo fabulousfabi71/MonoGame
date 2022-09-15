@@ -29,6 +29,7 @@ namespace MonoGame.Framework.Content.Pipeline.Builder
         public override string IntermediateDirectory { get { return _manager.IntermediateDirectory; } }
         public override string OutputDirectory { get { return _manager.OutputDirectory; } }
         public override string OutputFilename { get { return _pipelineEvent.DestFile; } }
+        public override string FontDir { get { return _manager.FontDir; } }
 
         public override OpaqueDataDictionary Parameters { get { return _pipelineEvent.Parameters; } }
 

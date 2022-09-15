@@ -5,11 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using MonoGame.Framework.Utilities;
+using SharpFont;
 using Glyph = Microsoft.Xna.Framework.Content.Pipeline.Graphics.Glyph;
 
 namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
@@ -29,11 +31,12 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
             TextureFormat = TextureProcessorOutputFormat.Compressed;
         }
 
-        public override SpriteFontContent Process(FontDescription input, ContentProcessorContext context)
+        public override SpriteFontContent Process(FontDescription input,
+            ContentProcessorContext context)
         {
             var output = new SpriteFontContent(input);
-            var fontFile = FindFont(input.FontName, input.Style);
-
+            var fontFile = FindFont(input.FontName, input.Style, context.FontDir);
+            
             if (string.IsNullOrWhiteSpace(fontFile))
             {
                 var directories = new List<string> { Path.GetDirectoryName(input.Identity.SourceFilename) };
@@ -90,9 +93,14 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
 
                 // We need to know how to pack the glyphs.
                 bool requiresPot, requiresSquare;
-                texProfile.Requirements(context, TextureFormat, out requiresPot, out requiresSquare);
+                texProfile.Requirements(context,
+                    TextureFormat,
+                    out requiresPot,
+                    out requiresSquare);
 
-                var face = GlyphPacker.ArrangeGlyphs(glyphData.ToArray(), requiresPot, requiresSquare);
+                var face = GlyphPacker.ArrangeGlyphs(glyphData.ToArray(),
+                    requiresPot,
+                    requiresSquare);
 
                 // Adjust line and character spacing.
                 lineSpacing += input.Spacing;
@@ -105,7 +113,10 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                     var texRect = glyph.Data.Subrect;
                     output.Glyphs.Add(texRect);
 
-                    var cropping = new Rectangle(0, (int)(glyph.Data.YOffset - yOffsetMin), (int)glyph.Data.XAdvance, output.VerticalLineSpacing);
+                    var cropping = new Rectangle(0,
+                        (int)(glyph.Data.YOffset - yOffsetMin),
+                        (int)glyph.Data.XAdvance,
+                        output.VerticalLineSpacing);
                     output.Cropping.Add(cropping);
 
                     // Set the optional character kerning.
@@ -142,6 +153,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                 }
 
                 bmp.SetPixelData(data);
+
+                WriteBmpData(input.Identity.SourceFilename, bmp.Width, bmp.Height, data);
             }
             else
             {
@@ -162,6 +175,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                 }
 
                 bmp.SetPixelData(data);
+
+                WriteBmpData(input.Identity.SourceFilename, bmp.Width, bmp.Height, data);
             }
 
             // Perform the final texture conversion.
@@ -170,7 +185,22 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
             return output;
         }
 
-        private static Glyph[] ImportFont(FontDescription options, out float lineSpacing, out int yOffsetMin, ContentProcessorContext context, string fontName)
+        private static void WriteBmpData(string fontFile,
+            int width,
+            int height,
+            byte[] data)
+        {
+            var dBmp = new DirectBitmap(width, height, data);
+            var tmpFile = Path.Combine(Path.GetDirectoryName(fontFile),
+                $"{Path.GetFileNameWithoutExtension(fontFile)}.png");
+            dBmp.Write(tmpFile);
+        }
+
+        private static Glyph[] ImportFont(FontDescription options,
+            out float lineSpacing,
+            out int yOffsetMin,
+            ContentProcessorContext context,
+            string fontName)
         {
             // Which importer knows how to read this source font?
             IFontImporter importer;
@@ -192,7 +222,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
             importer = new SharpFontImporter();
 
             // Import the source font data.
-            importer.Import(options, fontName);
+            var faceHeight = importer.Import(options, fontName);
 
             lineSpacing = importer.LineSpacing;
             yOffsetMin = importer.YOffsetMin;
@@ -231,8 +261,25 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
             return glyphs.ToArray();
         }
 
-        private string FindFont(string name, FontDescriptionStyle style)
+        private string FindFont(string name, FontDescriptionStyle style, string fontDir)
         {
+            // FW (15.09.2022):
+            // If the name is a file name, search the file in the special fonts directory.
+            var ext = Path.GetExtension(name);
+            if (ext == ".ttf" || ext == ".otf")
+            {
+                if (Directory.Exists(fontDir))
+                {
+                    foreach (var filename in Directory.GetFiles(fontDir))
+                    {
+                        if (Path.GetFileName(filename) == name)
+                        {
+                            return filename;
+                        }
+                    }
+                }
+            }
+
             if (CurrentPlatform.OS == OS.Windows)
             {
                 // FW (12.09.2022):

@@ -242,6 +242,18 @@ namespace MonoGame.Content.Builder
             Description = "Compress the XNB files for smaller file sizes.")]
         public bool CompressContent = false;
 
+        private string _fontDir = string.Empty;
+
+        [CommandLineParameter(
+            Name = "fontDir",
+            Flag = "e",
+            ValueName = "path",
+            Description = "The directory where additional font files are stored.")]
+        public void SetFontDir(string path)
+        {
+            _fontDir = Path.GetFullPath(path);
+        }
+
         public class ContentItem
         {
             public string SourceFile;
@@ -289,11 +301,18 @@ namespace MonoGame.Content.Builder
             if (!Path.IsPathRooted(outputPath))
                 outputPath = PathHelper.Normalize(Path.GetFullPath(Path.Combine(projectDirectory, outputPath)));
 
+            var fontDir = ReplaceSymbols(_fontDir);
+            if (!Path.IsPathRooted(fontDir))
+                fontDir = PathHelper.Normalize(Path.GetFullPath(Path.Combine(projectDirectory, fontDir)));
+
             var intermediatePath = ReplaceSymbols(_intermediateDir);
             if (!Path.IsPathRooted(intermediatePath))
                 intermediatePath = PathHelper.Normalize(Path.GetFullPath(Path.Combine(projectDirectory, intermediatePath)));
             
-            _manager = new PipelineManager(projectDirectory, outputPath, intermediatePath);
+            _manager = new PipelineManager(projectDirectory,
+                outputPath,
+                intermediatePath,
+                fontDir);
             _manager.Logger = new ConsoleLogger();
             _manager.CompressContent = CompressContent;
 

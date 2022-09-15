@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MonoGame.Content.Builder": {
+      "commandName": "Project",
+      "commandLineArgs": "/build:E:\\work\\SpriteFonts\\Arial.spritefont /outputDir:E:\\work\\SpriteFonts /fontDir:E:\\PaCIM-Data\\PaCIM.MGTFT\\Default\\Fonts"
+    }
+  }
+}

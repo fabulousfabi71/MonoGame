@@ -265,17 +265,21 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
         {
             // FW (15.09.2022):
             // If the name is a file name, search the file in the special fonts directory.
-            var ext = Path.GetExtension(name);
-            if (ext == ".ttf" || ext == ".otf")
+            var isFileName = Path.HasExtension(name);
+            if (isFileName)
             {
-                if (!string.IsNullOrEmpty(fontDir) &&
-                    Directory.Exists(fontDir))
+                var ext = Path.GetExtension(name);
+                if (ext == ".ttf" || ext == ".otf")
                 {
-                    foreach (var filename in Directory.GetFiles(fontDir))
+                    if (!string.IsNullOrEmpty(fontDir) &&
+                        Directory.Exists(fontDir))
                     {
-                        if (Path.GetFileName(filename) == name)
+                        foreach (var filename in Directory.GetFiles(fontDir))
                         {
-                            return filename;
+                            if (Path.GetFileName(filename) == name)
+                            {
+                                return filename;
+                            }
                         }
                     }
                 }
@@ -299,20 +303,37 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                 var fontDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
                 foreach (var key in new RegistryKey[] { Registry.LocalMachine, Registry.CurrentUser })
                 {
-                    var subkey = key.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts", false);
+                    var subkey = key.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts",
+                        false);
                     foreach (var font in subkey.GetValueNames().OrderBy(x => x))
                     {
-                        if (font.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                        string retValue = null;
+                        if (isFileName)
                         {
                             var fontPath = subkey.GetValue(font).ToString();
+                            if (name == fontPath)
+                            {
+                                retValue = fontPath;
+                            }
+                        }
+                        else
+                        {
+                            if (font.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                retValue = subkey.GetValue(font).ToString();
+                            }
+                        }
 
+                        if (!string.IsNullOrEmpty(retValue))
+                        {
                             // The registry value might have trailing NUL characters
                             // See https://github.com/MonoGame/MonoGame/issues/4061
-                            var nulIndex = fontPath.IndexOf('\0');
+                            var nulIndex = retValue.IndexOf('\0');
                             if (nulIndex != -1)
-                                fontPath = fontPath.Substring(0, nulIndex);
+                                retValue = retValue.Substring(0, nulIndex);
 
-                            return Path.IsPathRooted(fontPath) ? fontPath : Path.Combine(fontDirectory, fontPath);
+                            return Path.IsPathRooted(retValue) ?
+                                retValue : Path.Combine(fontDirectory, retValue);
                         }
                     }
                 }

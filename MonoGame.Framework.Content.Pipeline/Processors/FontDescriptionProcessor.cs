@@ -36,7 +36,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
         {
             var output = new SpriteFontContent(input);
             var fontFile = FindFont(input.FontName, input.Style, context.FontDir);
-            
+
+            context.Logger.LogMessage("Using font file: {0}", fontFile);
+
             if (string.IsNullOrWhiteSpace(fontFile))
             {
                 var directories = new List<string> { Path.GetDirectoryName(input.Identity.SourceFilename) };
@@ -266,9 +268,12 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
             // FW (15.09.2022):
             // If the name is a file name, search the file in the special fonts directory.
             var isFileName = Path.HasExtension(name);
+            //Console.WriteLine($"name: {name}");
+            //Console.WriteLine($"isFileName: {isFileName}");
+
             if (isFileName)
             {
-                var ext = Path.GetExtension(name);
+                var ext = Path.GetExtension(name).ToLower();
                 if (ext == ".ttf" || ext == ".otf")
                 {
                     if (!string.IsNullOrEmpty(fontDir) &&
@@ -283,6 +288,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                         }
                     }
                 }
+                return String.Empty;
             }
 
             if (CurrentPlatform.OS == OS.Windows)
@@ -297,8 +303,12 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
 
                 // FW (12.09.2022):
                 // Create the file name. Use also the style to get the right file.
-                var stylestr = style.ToString().Replace(",", string.Empty);
-                name = $"{name} {stylestr}".Trim();
+                if (style != FontDescriptionStyle.Regular)
+                {
+                    var stylestr = style.ToString().Replace(",", string.Empty);
+                    name = $"{name} {stylestr}".Trim();
+                }
+                //Console.WriteLine($"name: {name}");
 
                 var fontDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
                 foreach (var key in new RegistryKey[] { Registry.LocalMachine, Registry.CurrentUser })
@@ -311,6 +321,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                         if (isFileName)
                         {
                             var fontPath = subkey.GetValue(font).ToString();
+                            //Console.WriteLine($"Compare font: {fontPath}- with name:{name}");
                             if (name == fontPath)
                             {
                                 retValue = fontPath;
@@ -318,7 +329,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                         }
                         else
                         {
-                            if (font.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                            //Console.WriteLine($"Compare font: {font}- with name:{name}");
+                            if (font.StartsWith(name,
+                                StringComparison.OrdinalIgnoreCase))
                             {
                                 retValue = subkey.GetValue(font).ToString();
                             }

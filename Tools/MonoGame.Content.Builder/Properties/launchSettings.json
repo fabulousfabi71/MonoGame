@@ -2,7 +2,7 @@
   "profiles": {
     "MonoGame.Content.Builder": {
       "commandName": "Project",
-      "commandLineArgs": "/build:E:\\work\\SpriteFonts\\Arial.spritefont /outputDir:E:\\work\\SpriteFonts /fontDir:E:\\PaCIM-Data\\PaCIM.MGTFT\\Default\\Fonts"
+      "commandLineArgs": "/build:\"E:\\work\\SpriteFonts\\Courier New-Regular-40-Pixel.spritefont\" /outputDir:E:\\work\\SpriteFonts /fontDir:E:\\PaCIM-Data\\PaCIM.MGTFT\\Default\\Fonts"
     }
   }
 }

@@ -19,26 +19,26 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         /// <summary>
         /// Normal text.
         /// </summary>
-        Regular = 0x01,
+        Regular = 0x00,
 
         /// <summary>
         /// Bold text.
         /// </summary>
-        Bold = 0x02,
+        Bold = 0x01,
 
         /// <summary>
         /// Italic text.
         /// </summary>
-        Italic = 0x04,
+        Italic = 0x02,
 
         /// <summary>
         /// Underlined text.
         /// </summary>
-        Underline = 0x08,
+        Underline = 0x04,
 
         /// <summary>
         /// Strikeout text.
         /// </summary>
-        Strikeout = 0x10,
+        Strikeout = 0x08,
     }
 }

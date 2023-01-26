@@ -77,7 +77,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         public override void Requirements(ContentProcessorContext context, TextureProcessorOutputFormat format, out bool requiresPowerOfTwo, out bool requiresSquare)
         {
-            if (format == TextureProcessorOutputFormat.Compressed)
+            if (format == TextureProcessorOutputFormat.Color)
                 format = GetTextureFormatForPlatform(format, context.TargetPlatform);
 
             // Does it require POT textures?

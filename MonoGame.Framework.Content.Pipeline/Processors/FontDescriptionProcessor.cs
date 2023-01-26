@@ -28,7 +28,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
         public FontDescriptionProcessor()
         {
             PremultiplyAlpha = true;
-            TextureFormat = TextureProcessorOutputFormat.Compressed;
+            TextureFormat = TextureProcessorOutputFormat.Color;
         }
 
         public override SpriteFontContent Process(FontDescription input,
@@ -88,10 +88,11 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
                 var glyphData = new HashSet<GlyphData>(glyphs.Select(x => x.Data));
 
                 // Optimize.
-                foreach (GlyphData glyph in glyphData)
-                {
-                    GlyphCropper.Crop(glyph);
-                }
+                // FW (2023-01-26): Don't use the optimize.
+                //foreach (GlyphData glyph in glyphData)
+                //{
+                //    GlyphCropper.Crop(glyph);
+                //}
 
                 // We need to know how to pack the glyphs.
                 bool requiresPot, requiresSquare;

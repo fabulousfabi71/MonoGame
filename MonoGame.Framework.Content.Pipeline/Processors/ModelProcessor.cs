@@ -24,7 +24,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
         private bool _premultiplyTextureAlpha = true;
         private bool _premultiplyVertexColors = true;
         private float _scale = 1.0f;
-        private TextureProcessorOutputFormat _textureFormat = TextureProcessorOutputFormat.Compressed;
+        private TextureProcessorOutputFormat _textureFormat = TextureProcessorOutputFormat.Color;
 
         #endregion
 

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -399,7 +400,7 @@ namespace MonoGame.Framework
             if (!_isResizeTickEnabled)
                 return;
             UpdateWindows();
-            Game.Tick();
+            //Game.Tick();
             _resizeTickTimer.Enabled = true;
         }
 
@@ -475,14 +476,22 @@ namespace MonoGame.Framework
         // Run game loop when the app becomes Idle.
         private void TickOnIdle(object sender, EventArgs e)
         {
-            var nativeMsg = new NativeMessage();
+            //Console.Beep(500, 100);
+
+            //var nativeMsg = new NativeMessage();
+
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
             do
             {
-                UpdateWindows();
+                //UpdateWindows();
                 Game.Tick();
             }
-            while (!PeekMessage(out nativeMsg, IntPtr.Zero, 0, 0, 0) && Form != null && Form.IsDisposed == false);
+            while (!PeekMessage(out _, IntPtr.Zero, 0, 0, 0) &&
+                Form != null &&
+                Form.IsDisposed == false);
         }
+
+        WinFormsGameWindow MainWin = null;
 
         internal void UpdateWindows()
         {
@@ -490,10 +499,21 @@ namespace MonoGame.Framework
 
             try
             {
+                if (MainWin == null)
+                {
+                    MainWin = _allWindows.Where(win => win.Game == Game).FirstOrDefault();
+                }
+                //var window = _allWindows.Where(win => win.Game == Game).FirstOrDefault();
+                MainWin?.UpdateMouseState();
+
                 // Update the mouse state for each window.
-                foreach (var window in _allWindows)
-                    if (window.Game == Game)
-                        window.UpdateMouseState();
+                //foreach (var window in _allWindows)
+                //{
+                //    if (window.Game == Game)
+                //    {
+                //        window.UpdateMouseState();
+                //    }
+                //}
             }
             finally
             {

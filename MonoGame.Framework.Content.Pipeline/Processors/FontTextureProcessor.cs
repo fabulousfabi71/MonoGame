@@ -106,11 +106,12 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Processors
 
             var glyphs = ExtractGlyphs((PixelBitmapContent<Color>)face);
             // Optimize.
-            foreach (var glyph in glyphs)
-            {
-                GlyphCropper.Crop(glyph);
-                output.VerticalLineSpacing = Math.Max(output.VerticalLineSpacing, glyph.Subrect.Height);
-            }
+            // FW (2023-01-26): Don't use the optimize.
+            //foreach (var glyph in glyphs)
+            //{
+            //    GlyphCropper.Crop(glyph);
+            //    output.VerticalLineSpacing = Math.Max(output.VerticalLineSpacing, glyph.Subrect.Height);
+            //}
 
             // Get the platform specific texture profile.
             var texProfile = TextureProfile.ForPlatform(context.TargetPlatform);

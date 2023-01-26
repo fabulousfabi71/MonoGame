@@ -508,6 +508,13 @@ namespace Microsoft.Xna.Framework
         private readonly object _locker = new object();
 #endif
 
+        public void Tick()
+        {
+            //Console.Beep(500, 100);
+            DoUpdate(_gameTime);
+            DoDraw(_gameTime);
+        }
+
         /// <summary>
         /// Run one iteration of the game loop.
         ///
@@ -516,7 +523,7 @@ namespace Microsoft.Xna.Framework
         /// When <see cref="IsFixedTimeStep"/> is set to <code>false</code> this will
         /// make exactly one call to <see cref="Update"/>.
         /// </summary>
-        public void Tick()
+        public void Tick_XXX()
         {
             // NOTE: This code is very sensitive and can break very badly
             // with even what looks like a safe change.  Be sure to test 
